@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Info Coronaa</title>
+    <style>
+        table, th, tbody, td{
+            margin-top: 10px;
+            border: 1px solid black;
+            border-collapse: collapse;
+            padding: 10px;
+            padding-left: 30px;
+            padding-right: 30px;
+        }
+
+    </style>
+</head>
+<body>
+    <center>
+    <div>
+        <fieldset>
+            <legend>Warga</legend>
+            <table>
+                    <thead>
+                        <th>Antrian</th>
+                        <th>Nama</th>
+                        <th>Asal</th>
+                        <th>Tujuan</th>
+                        <th>Action</th>
+                    </thead>
+                    <tbody id="antrian">
+
+                    </tbody>
+                    <tbody id="antrianInput"><br>
+                        <form>
+                            <td></td>
+                            <td><input type="text" id="nama" placeholder="Masukkan nama"></td>
+                            <td><input type="text" id="asal" placeholder="Masukkan kota asal"></td>
+                            <td><input type="text" id="tujuan" placeholder="Masukkan kota tujuan"></td>
+                            <td><input type="button" id="antri" onclick="antrian()" value="antri"></td>
+                        </form>
+                    </tbody>
+                </table>
+            </fieldset>
+            <fieldset>
+                <legend>Rapid Test</legend>
+                <table>
+                    <thead>
+                        <th>Antrian</th>
+                        <th>Nama</th>
+                        <th>Asal</th>
+                        <th>Tujuan</th>
+                        <th>Action</th>
+                    </thead>
+                    <tbody id="print-data-rapid">
+
+                    </tbody>
+                </table>
+            </fieldset>
+            <fieldset>
+                <legend>Pasien Positif</legend>
+                <table>
+                    <thead>
+                        <th>Antrian</th>
+                        <th>Nama</th>
+                        <th>Asal</th>
+                        <th>Tujuan</th>
+                        <th>Action</th>
+                    </thead>
+                    <tbody id="print-data-positif">
+
+                    </tbody>
+                </table>
+            </fieldset>
+            <fieldset>
+                <legend>Pasien Negatif</legend>
+                <table>
+                    <thead>
+                        <th>Antrian</th>
+                        <th>Nama</th>
+                        <th>Asal</th>
+                        <th>Tujuan</th>
+                        <th>Action</th>
+                    </thead>
+                    <tbody id="print-data-negatif">
+
+                    </tbody>
+                </table>
+            </fieldset>
+            <fieldset>
+                <legend>Total Data</legend>
+                <table>
+                    <tr>
+                        <td>Warga rapid:</td>
+                        <td><p id="warga-rapid"></p></td>
+                        <td>Warga positif:</td>
+                        <td><p id="warga-positif"></p></td>
+                        <td>Warga negatif:</td>
+                        <td><p id="warga-negatif"></p></td>
+                        <td>Warga meninggal:</td>
+                        <td><p id="warga-meninggal"></p></td>
+                    </tr>
+                </table>
+            </fieldset>
+            
+        </div>
+    </center>
+</body>
+</html>
+
+<script>
+    let data = []
+    let dataRapid = []
+    let dataHasilTest = []
+    let dataNegatif= []
+    let dataHasilRapid = []
+    let dataPositif = []
+    
+    function antrian(){
+        let antrian = kodeAntrian()
+        let nama = document.getElementById("nama").value
+        let asal = document.getElementById("asal").value
+        let tujuan = document.getElementById("tujuan").value
+        
+        data.push({antrian, nama, asal, tujuan})
+        // console.table(data)
+        printData()
+
+        document.getElementById("nama").value = null
+        document.getElementById("asal").value = null
+        document.getElementById("tujuan").value = null
+    }
+
+    function printData(i, dataPrint= data){
+        let hasil = ""
+        dataPrint.forEach((a, i) =>{
+                    hasil += `
+                <tr>
+                    <td>${a.antrian}</td>
+                    <td>${a.nama}</td>
+                    <td>${a.asal}</td>
+                    <td>${a.tujuan}</td>
+                    <td><input type="button" value="Rapid Test" onclick="onBtnRapid(${i})"></td>
+                    </tr>   
+                    `
+        })
+        document.getElementById("antrian").innerHTML = hasil
+
+    }
+
+    function kodeAntrian(){
+        let huruf1 = String.fromCharCode(Math.random()*(91-65)+65).toString()
+        let huruf2 = String.fromCharCode(Math.random()*(91-65)+65).toString()
+        let huruf3 = String.fromCharCode(Math.random()*(91-65)+65).toString()
+        let angka = Math.floor(Math.random()*100)
+        return kode = huruf1 + angka + huruf2 + huruf3
+    }
+
+    function onBtnRapid(i){
+        dataRapid.push(data[i])
+        data.splice(i,1)
+        printData()
+        printRapid(i)
+        let wargaRapid = dataRapid.length
+        document.getElementById("warga-rapid").innerHTML = wargaRapid
+        return dataRapid
+    } 
+    console.table(dataRapid)
+
+    function printRapid(i){
+        let hasil = ""
+        dataRapid.forEach((b, i) =>{
+        hasil += `
+        <tr>
+            <td>${b.antrian}</td>
+            <td>${b.nama}</td>
+            <td>${b.asal}</td>
+            <td>${b.tujuan}</td>
+            <td>
+            <select id="hasil-test" onChange="select(${i})">
+                <option selected disabled value="">Hasil Rapid</option>
+                <option value="positif">Positif</option>
+                <option value="negatif">Negatif</option>
+            </select>
+            </td>
+        </tr>   
+        `
+    })
+    document.getElementById("print-data-rapid").innerHTML = hasil
+    }
+
+    function select(i){
+        dataHasilTest.push(dataRapid[i])
+        let hasilTest = document.getElementById("hasil-test").value
+        console.table(dataHasilTest)
+        if(hasilTest === "positif"){
+            alert("positif")
+            dataPositif.push({
+                antrian: dataRapid[i].antrian,
+                nama: dataRapid[i].nama,
+                asal: dataRapid[i].asal,
+                tujuan: dataRapid[i].tujuan,
+                action: "positif",
+            })
+            let totalPositif = dataPositif.length
+            document.getElementById("warga-positif").innerHTML = totalPositif
+            console.table(dataPositif)
+
+            positif(i)
+        } else {
+            alert("negatif")
+            dataNegatif.push({
+                antrian: dataRapid[i].antrian,
+                nama: dataRapid[i].nama,
+                asal: dataRapid[i].asal,
+                tujuan: dataRapid[i].tujuan,
+                action: "negatif",
+            })
+            console.table(dataNegatif)
+            negatif(i)
+        }
+        dataRapid.splice(i,1)
+        printRapid(i)
+        let wargaRapid = dataRapid.length
+        document.getElementById("warga-rapid").innerHTML = wargaRapid
+    }
+    
+    
+    function positif(i){
+        let hasil = ""
+        dataPositif.forEach((b, i) =>{
+        hasil += `
+        <tr>
+            <td>${b.antrian}</td>
+            <td>${b.nama}</td>
+            <td>${b.asal}</td>
+            <td>${b.tujuan}</td>
+            <td>
+                <select id="hasil-positif" onChange="selectPositif(${i})">
+                    <option selected disabled value="">Hasil Rapid</option>
+                    <option value="sembuh">Sembuh</option>
+                    <option value="meninggal">Meninggal</option>
+                </select>
+            </td>
+        </tr>   
+        `})
+        
+        document.getElementById("print-data-positif").innerHTML = hasil
+    }
+
+    let dataNegatifCount = []
+    function negatif(i){
+        let hasil = ""
+        dataNegatif.forEach((b, i) =>{
+        hasil += `
+        <tr>
+            <td>${b.antrian}</td>
+            <td>${b.nama}</td>
+            <td>${b.asal}</td>
+            <td>${b.tujuan}</td>
+            <td><input type="button" onclick="toWarga(${i})" value="To Warga"></td>
+        </tr>   
+        `})
+        document.getElementById("print-data-negatif").innerHTML = hasil
+    }
+
+    let dataSembuh = []
+    let dataMeninggal = []
+    function selectPositif(i){
+        let hasilTest = document.getElementById("hasil-positif").value
+        if(hasilTest === "sembuh"){
+            alert("sembuh")
+            dataSembuh.push({
+                antrian: dataPositif[i].antrian,
+                nama: dataPositif[i].nama,
+                asal: dataPositif[i].asal,
+                tujuan: dataPositif[i].tujuan,
+                action: "sembuh"
+            })
+            console.table(dataSembuh)
+            sembuh(i)
+        } else {
+            alert("meninggal")
+            dataMeninggal.push({
+                antrian: dataPositif[i].antrian,
+                nama: dataPositif[i].nama,
+                asal: dataPositif[i].asal,
+                tujuan: dataPositif[i].tujuan,
+                action: "meninggal",
+            })
+            console.table(dataMeninggal)
+            meninggal(i)
+        }
+
+        dataPositif.splice(i,1)
+        let totalPositif = dataPositif.length
+        document.getElementById("warga-positif").innerHTML = totalPositif
+        positif(i)
+        printRapid(i)
+    }
+
+    let sembuhCount  = []
+    function sembuh(i){
+        sembuhCount.push(dataSembuh)
+        negatifPrint(sembuhCount, negatifCount)
+    }
+
+    function meninggal(i){
+        let wargaMeninggal = dataMeninggal.length
+        document.getElementById("warga-meninggal").innerHTML = wargaMeninggal
+    }
+
+    let negatifCount = []
+    function toWarga(i){
+        negatifCount.push(dataNegatif[i])
+        dataNegatif.splice(i, 1)
+        negatif(i)
+        negatifPrint(sembuhCount, negatifCount)
+        console.log(negatifCount)
+    }
+
+    function total(){
+        let wargaRapid = dataRapid.length
+        let totalWarga 
+    }
+
+    function negatifPrint(a=0, b=0){
+        let wargaSembuh = a.length + b.length
+        return document.getElementById("warga-negatif").innerHTML = wargaSembuh
+
+    }
+</script>

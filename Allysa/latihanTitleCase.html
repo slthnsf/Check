@@ -1,0 +1,61 @@
+<script>
+    let str = prompt("Masukkan sebuah kalimaat!")
+alert(`
+Kalimat type case : ${typeCase(str)}
+Huruf vokal : ${check(str)[0].result}
+Jumlah huruf vokal : ${check(str)[0].vokal}
+Huruf konsonan : ${check(str)[0].resultKonsonan}
+Jumlah huruf konsonan : ${check(str)[0].konsonan}
+`)
+
+function check(str){
+    let hasil = []
+    str = str.toLowerCase()
+    if(Boolean(str.match(/[^a|i|u|e|o]/ig)) === true){
+        result = str.match(/[a|i|u|e|o]/ig)
+        resultKonsonan = str.match(/[^a|i|u|e|o]/ig).join("")
+        if(str.match(/\s/g) === true){
+            let jumlahSpasi = str.match(/\s/g).length
+        } else {
+            jumlahSpasi = 0
+        }
+        let vokal = result.length
+        result = result.join("")
+        let konsonan = str.length - vokal - jumlahSpasi
+        hasil.push({vokal, konsonan, result, resultKonsonan})
+        return hasil
+
+    } else {
+        result = str.match(/[a|i|u|e|o]/ig)
+        let vokal = result.length
+        let resultKonsonan = "none"
+        result = result.join("")
+        let konsonan = 0
+        hasil.push({vokal, konsonan, result, resultKonsonan})
+        return hasil
+    }
+    
+}
+
+function typeCase(str){
+    let kalimat = ""
+    str = str.toLowerCase()
+    
+    if(Boolean(str.match(/\s/g)) === true){
+        kalimat = str.split(" ")
+        hasil = kalimat.map((a, i) =>{
+            return a.split("")
+        })
+        hasil = hasil.map((a, i)=>{
+            hasil[i][0] = hasil[i][0].toUpperCase()
+            return a.join("")
+        })
+        kalimat = hasil.join(" ")
+    }  else {
+        kalimat = str.split("")
+        kalimat[0] = kalimat[0].toUpperCase()
+        kalimat = kalimat.join("")
+    }
+    return kalimat
+}
+</script>
